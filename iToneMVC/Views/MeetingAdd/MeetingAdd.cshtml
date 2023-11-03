@@ -1,0 +1,180 @@
+﻿@using DYDCPF.Classes;
+
+<div class="container">    
+    <h4>
+        @ViewBag.LocaMark
+        @* <a href="/Home/Index">@ViewBag.HomeName</a> /  *@
+        <a href="/MeetingManage/MeetingManage">週會簡報合併管理模組</a> /
+        週會新增
+    </h4>
+
+    <table>
+        <tr>
+            
+            <td style="vertical-align: middle;">
+                週會分類：
+
+                @if (ViewBag.DropDownOptions != null)
+                {
+                    @Html.DropDownList("MeetingType", (IEnumerable<SelectListItem>)ViewBag.DropDownOptions, "請選擇一個選項", new { @class = "btn btn-primary dropdown-toggle" })
+                }
+            </td>
+            <td style="vertical-align: middle;">
+                &nbsp;&nbsp;&nbsp;
+                週會時間：
+                <input type="text" id="MeetingDate" />
+                
+            </td>
+            <td style="vertical-align: middle;">
+
+                <button type="button" class="btn btn-primary" onclick="InsertMeeging()">新增</button>
+
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <br />
+                <table class="gvStyle" Style="word-break: break-all; word-wrap: normal; width: 100%;" Font-Size="Medium">
+                    <thead>
+                        <tr>
+                            <th>週會分類</th>
+                            <th>日期</th>
+                            @* <th colspan="3">Action</th> *@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.Meetings != null)
+                        {
+                            var _Meeting = ViewBag.Meetings as List<MeetingWithSettings>;
+
+                            @foreach (var item in _Meeting)
+                            {
+                                <tr>
+
+                                    <td align="left">
+                                        <input type="hidden" asp-for="@item.Meeting.meet_id" />
+
+                                        @if (ViewBag.EditingRow != null && ViewBag.EditingRow == item.Meeting.meet_id)
+                                        {
+                                            <input asp-for="@item.TypeDisplayName" />
+                                        }
+                                        else
+                                        {
+                                            @item.TypeDisplayName
+                                        }
+
+                                    </td>
+                                    <td align="left">
+                                        @if (ViewBag.EditingRow != null && ViewBag.EditingRow == item.Meeting.meet_id)
+                                        {
+                                            <input asp-for="@item.Meeting.MeetingDate" />
+                                        }
+                                        else
+                                        {
+                                            @* @item.Meeting.MeetingDate.ToString("yyyy/MM/dd HH:mm") *@
+                                            @item.Meeting.MeetingDate.ToString("yyyy/MM/dd")
+                                        }
+
+                                    </td>
+                                    @* <td>
+                                        @if (ViewBag.EditingRow != null && ViewBag.EditingRow == item.Meeting.meet_id)
+                                        {
+                                            <a href="@Url.Action("ConfirmEdit", new { pno = item.Meeting.meet_id })" class="btn btn-success">確定</a>
+                                            <a href="@Url.Action("CancelEdit", new { pno = item.Meeting.meet_id })" class="btn btn-secondary">Cancel</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Action("Edit", new { pno = item.Meeting.meet_id })" class="btn btn-secondary">編輯</a>
+                                            <a href="@Url.Action("Delete", new { pno = item.Meeting.meet_id })" class="btn btn-danger">刪除</a>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("GotoMerge", new { pno = item.Meeting.meet_id })" class="btn btn-primary">進行合併</a>
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("Review", new { pno = item.Meeting.meet_id })" class="btn btn-dark">檢視</a>
+                                    </td> *@
+                                </tr>
+
+                            }   //for
+                        }
+                    </tbody>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+    <br /><br /><br />
+    @* <form asp-action="MergePDF" method="post">
+        <button type="submit">合併PDF</button>
+    </form> *@
+
+    @* <embed src="@Url.Action("MergePDF")" width="100%" height="600" /> *@
+
+    @if (ViewBag.PdfFileBase64 != null)
+    {
+        <p>檔案合併成功路徑：@ViewBag.mergedPdfPath</p>
+        <embed src="data:application/pdf;base64,@ViewBag.PdfFileBase64" width="100%" height="300" />
+    }
+
+</div>
+
+<script>
+    // $('#date1').datetimepicker({
+    //     date: null, //一開始輸入框的日期為空
+    //     format: 'YYYY-MM-DD HH:mm', //日期的顯示格式
+    //     locale: moment.locale('zh-tw') //國別
+
+    // });
+
+    $(document).ready(function () {
+
+        console.log("datetimepickerJS");
+
+        $(function () {
+            $('#MeetingDate').datetimepicker({
+                format: 'Y-m-d', // Date format
+                step: 60,             // time 間隔（分鐘）
+                timepicker: false,     // 啟用時間選擇
+                datepicker: true,     // 啟用日期選擇
+            });
+        });
+
+    });
+
+
+    function InsertMeeging() {
+        console.log("InsertMeeging");
+
+        var self = this;
+
+        if ($("#MeetingType").val() == "") {
+            alert("請選擇週會分類");
+            return;
+        }
+        if ($("#MeetingDate").val() == "") {
+            alert("請輸入日期");
+            return;
+        }
+
+        // 組合表單資料
+        var postData = {};
+        postData['MeetingType'] = $("#MeetingType").val();// self.form.UserID;
+        postData['MeetingDate'] = $("#MeetingDate").val();// self.form.UserPwd;
+
+        // 使用 jQuery Ajax 傳送至後端
+        $.ajax({
+            url: '@Url.Content("~/MeetingAdd/AddMeeging")',
+            method: 'POST',
+            dataType: 'json',
+            data: { inModel: postData },
+            success: function (datas) {
+                window.location.href = "/MeetingManage/MeetingManage";
+            },
+            error: function (err) {
+                $('#ErrorMsg').html(err.responseText);
+                $('#ErrorAlert').modal('toggle');
+            },
+        });
+    }
+</script>

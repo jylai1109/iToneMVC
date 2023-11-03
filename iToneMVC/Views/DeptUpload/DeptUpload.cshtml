@@ -1,0 +1,327 @@
+﻿
+@* @using (Html.BeginForm("Create", "NPOI", FormMethod.Post, new { enctype = "multipart/form-data" })) 
+    {
+
+    <div class="container">
+        <h4>現在位置：<a href="/Home/Index">週會協作平台首頁</a> / 部門上傳作業</h4>
+
+        <h>上傳檔案檢視</h>
+
+        <br /><br />
+        <div class="form-group">
+            <input type="file" id="FileUpload_FileName" name="FileUpload_FileName" />
+        </div>
+        <br /><br />
+        <button type="submit" class="btn btn-primary">檔案上傳</button>
+    </div>
+    
+
+} *@
+@* 
+<form action="DeptUpload/?handler=Upload"
+      enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;"
+      method="post"> *@
+@* @using (Html.BeginForm("DeptUpload", "DeptUpload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    { *@
+<h4>
+    @ViewBag.LocaMark
+    @* <a href="/Home/Index">@ViewBag.HomeName</a> /  *@
+    <a href="/DeptUploadQuery/DeptUploadQuery">簡報議題上傳-查詢</a> /
+    簡報議題上傳-新增
+</h4>
+
+<form asp-action="DoUpload" method="post" enctype="multipart/form-data">
+    <h5>
+        部門：
+        @{
+
+            if ((string)ViewBag.LoginDeptName != "")
+            {
+
+                    @Html.Label("LoginDeptName", (string)ViewBag.LoginDeptName)
+
+                    <label>&nbsp;</label>
+            }
+        }
+        週會日期：
+@* 
+        @if (ViewBag.DropDownOptions != null)
+        {
+            @Html.DropDownList("Meetings", (IEnumerable<SelectListItem>)ViewBag.DropDownOptions, "請選擇一個選項", new { @class = "btn btn-primary dropdown-toggle" })
+        } *@
+
+        <select id="Meetings" name="Meetings" class="form-control btn btn-secondary dropdown-toggle" style="width: 200px;">
+            <option value="">請選擇一個選項</option>
+            @if (ViewBag.DropDownOptions != null)
+            {
+                foreach (var option in ViewBag.DropDownOptions)
+                {
+                    <option value="@option.Value">@option.Text</option>
+                }
+            }
+        </select>
+
+        <input type="hidden" name="SelectedMeetingValue" id="SelectedMeetingValue" />
+        <input type="hidden" name="SelectedMeetingText" id="SelectedMeetingText" />
+    </h5>
+
+    <div class="container">
+        @* <embed src="data:application/pdf;base64,@ViewBag.PdfFileBase64" class="img-responsive" style="width: 100%; max-height: 350px;" /> *@
+@* 
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                
+                <div class="text-center" style="width: 100%;">
+        @if (ViewBag.mergedPdfPath != null)
+                    {
+                        
+                        <iframe src="data:application/pdf;base64,@ViewBag.PdfFileBase64" class="img-responsive" style="width: 100%; height: 350px;" />
+                    }
+                    else
+                    {
+                        <div style="background-color: #ccc; width: 100%; height: 350px; text-align: center; line-height: 350px;">
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="text-center">
+                    <div class="input-group">
+                        <input type="file" name="file" id="file" class="form-control" accept=".pdf" style="width: 50%;" />
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary" onclick="validatePDF">檔案上傳</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div style="margin-top: 15px;">
+                    <output name="result"></output>
+                </div>
+            </div>
+        </div>
+ *@
+
+        <table Style="word-break: break-all; word-wrap: normal; width: 100%; border:0; font-size: large;">
+            <tr>
+                <td align="center" >
+                    @if (ViewBag.mergedPdfPath != null)
+                    {
+                        @if (ViewBag.mergedPdfPath != null)
+                        {
+                            <p>檔案路徑：@ViewBag.mergedPdfPath</p>
+                            <embed id="embedFile" src="@Url.Content(ViewBag.mergedPdfPath)" type="application/pdf" width="100%" height="600" />
+                        }
+                        @* <embed src="data:application/pdf;base64,@ViewBag.PdfFileBase64" width="100%" height="350" /> *@
+                    }            
+                    else
+                    {
+                        <div style="background-color: #ccc; width: 80%; height: 350px; text-align: center; line-height: 500px;">
+                            
+                        </div>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td align="center" >
+                    <dl>                        
+                        <dd style="display: flex; justify-content: center; align-items: center;">
+                            <input type="file" name="file" id="file" class="form-control" accept=".pdf" style="width: 50%;" />
+                            &nbsp;&nbsp;&nbsp;
+                            <button type="submit" class="btn btn-primary" onclick="validatePDF()">檔案上傳</button>
+                        </dd>
+                    </dl>
+                </td>
+            </tr>
+            <tr>                
+                <td align="left">
+                    <div style="vertical-align: top;">已上傳檔案清單：</div>
+                    <br />
+                    <table id="FileList" class="gvStyle" Style="word-break: break-all; word-wrap: normal; width: auto;" Font-Size="Medium">
+                        <thead>
+                            <tr>
+                                <th style="width=200px">週會日期</th>
+                                <th style="width=auto">檔案</th>
+                                 <th>
+                                    Action
+                                </th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                    <div style="margin-top:15px">
+                        <output name="result"></output>                        
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+
+                </td>
+            </tr>
+        </table>
+         
+    </div>
+@* } *@
+</form>
+
+
+<script>
+    $(document).ready(function () {
+        console.log("DeptUpload");
+
+        var lastSelected = '@ViewBag.LastSelected'; // get ViewBag.LastSelected 的值
+        if (lastSelected) {            
+            $("#Meetings").val(lastSelected);
+            ReloadFileList();
+        }
+
+        $("#Meetings").change(function () {
+            $("#SelectedMeetingValue").val($(this).val());
+            $("#SelectedMeetingText").val($("#Meetings option:selected").text());
+
+            var selectedValue = $(this).val();
+            
+            if (selectedValue) {
+                $.ajax({
+                    url: '/DeptUpload/GetMeetingFileData', // 替换成您的控制器和操作方法
+                    method: 'POST',
+                    data: { selectedValue: selectedValue },
+                    success: function (data) {
+                        // 在此处理从控制器返回的数据
+                        updateTable(data);
+                    },
+                    error: function () {
+                        alert('發生錯誤');
+                    }
+                });
+            }
+        });
+
+        function ReloadFileList() {
+            var selectedValue = $("#Meetings").val();
+
+            if (selectedValue) {
+                $.ajax({
+                    url: '/DeptUpload/GetMeetingFileData', // 替换成您的控制器和操作方法
+                    method: 'POST',
+                    data: { selectedValue: selectedValue },
+                    success: function (data) {
+                        // 在此处理从控制器返回的数据
+                        updateTable(data);
+                    },
+                    error: function () {
+                        alert('發生錯誤');
+                    }
+                });
+            }
+        }
+
+        function updateTable(data) {
+            var table = $("#FileList").find("tbody");
+            table.empty(); // 清空表格内容
+
+            data.forEach(function (item, index) {
+                // var hiddenFieldId = "hmeetfile_id_" + index;
+                
+                // //var link = "<a href='" + item.Path + "' target='_blank'>" + item.NewFileName + "</a>";
+                
+                // var deleteButton = "<button class='btn btn-danger' onclick='deleteFile(" + hiddenFieldId + ")'>删除</button>";
+
+                // var row = "<tr><td style='width: 15%'><input type='hidden' id='" + hiddenFieldId + "' value='" + item.meetfile_id + "'>" + item.MeetingDate + "</td><td style='width: auto'>" + link + "</td><td>" + deleteButton + "</td></tr>";
+                
+                // table.append(row);
+
+                var hiddenFieldId = "hmeetfile_id_" + index;
+
+                var link = "<a href='#' onclick='showFile(\"" + item.Path + "\")'>" + item.NewFileName + "</a>";
+
+                var deleteButton = "<button class='btn btn-danger' onclick='deleteFile(" + hiddenFieldId + ")'>删除</button>";
+
+                var row = "<tr><td style='width: 15%'><input type='hidden' id='" + hiddenFieldId + "' value='" + item.meetfile_id + "'>" + item.MeetingDate + "</td><td style='width: auto'>" + link + "</td><td>" + deleteButton + "</td></tr>";
+
+                table.append(row);
+            });
+        }
+
+        function showFile(filePath) {
+            // 获取embed元素
+            var embedElement = document.getElementById("embedFile");
+
+            // 设置embed元素的src属性，以显示所选文件
+            embedElement.src = filePath;
+        }
+
+    });
+
+    function validatePDF() {
+
+        if ($("#Meetings").val() == "") {
+            alert("請選擇週會日期");
+            event.preventDefault(); // 阻止submit
+            return;
+        }
+
+        if ($("#file").val() == "") {
+            alert("請選擇上傳檔案");
+            event.preventDefault(); // 阻止submit
+            return;
+        }
+
+        
+        const fileInput = document.getElementById("file");
+        const file = fileInput.files[0];
+
+        if (file) {
+            const fileType = file.type;
+            if (fileType !== "application/pdf") {
+                alert("請上傳 PDF 檔案");
+                event.preventDefault(); // 阻止submit
+            }
+        }
+    }
+
+    // function DoUpload() {
+    //     const formData = new FormData(oFormElement);
+
+    //     $.ajax({
+    //         url: '@Url.Content("~/DeptUpload/Upload")',
+    //         method: 'POST',
+    //         success: function () {
+    //             alert('已登出');
+    //         }
+    //     });
+
+    //     $("#div_login").show();
+    //     $("#div_logout").hide();
+
+    //     window.location.href = '/Home/Index';
+    // }
+
+    // function AJAXSubmit(oFormElement) {
+    //     var resultElement = oFormElement.elements.namedItem("result");
+    //     const formData = new FormData(oFormElement);
+
+    //     try {
+    //         const response = fetch(oFormElement.action, {
+    //             method: 'POST',
+    //             body: formData
+    //         });
+
+    //         if (response.ok) {
+    //             //window.location.href = '/';
+    //         }
+
+    //         resultElement.value = 'Result: ' + response.status + ' ' +
+    //             response.statusText;
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //     }
+    // }
+</script>

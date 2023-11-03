@@ -2,7 +2,40 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div style="text-align: center;">
+    <h1>週會資訊清單</h1>
+    <table class="gvStyle" Style="word-break: break-all; word-wrap: normal; width: 100%;" Font-Size="Medium">
+       <thead>
+           <tr>
+                <th >週會類型</th>
+                <th style="white-space: nowrap;">日期</th>
+                <th style="white-space: nowrap;">星期</th>
+                <th style="white-space: nowrap;">時間</th>
+                <th style="white-space: nowrap;">Zoom</th>
+                <th style="white-space: nowrap;">會議 ID</th>
+                <th style="white-space: nowrap;">密碼</th>
+           </tr>
+            
+       </thead>
+        <tbody>
+            <tr>
+                <td align="center" class="gvStyle" style="white-space: nowrap;">周二</td>
+                <td align="center" class="gvStyle" style="white-space: nowrap;">2023/10/31</td>
+                <td align="center" class="gvStyle">二</td>
+                <td align="center" class="gvStyle" style="white-space: nowrap;">19:00 ~ 21:00</td>
+                <td align="center" class="gvStyle" >
+                    <a href="https://zoom.us/j/92237125197?pwd=cVhjTElhM2pIaUdhU2kzbDIzVjV2QT09">https://zoom.us/j/92237125197?pwd=cVhjTElhM2pIaUdhU2kzbDIzVjV2QT09</a>
+                </td>
+                <td align="center" class="gvStyle" style="white-space: nowrap;">
+                    @{
+                        string longNumber = "92237125197";
+                        string formattedNumber = $"{longNumber.Substring(0, 3)} {longNumber.Substring(3, 4)} {longNumber.Substring(7, 4)}";
+                    }
+                    @formattedNumber
+                    @* 922 3712 5197 *@
+                </td>
+                <td align="center" class="gvStyle" style="white-space: nowrap;">511029</td>
+            </tr>            
+        </tbody>
+   </table>
 </div>

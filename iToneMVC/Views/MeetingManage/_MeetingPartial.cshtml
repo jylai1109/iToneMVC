@@ -1,0 +1,172 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@using DYDCPF.Classes;
+
+<div id="meetingTableDiv">
+    <table class="gvStyle" Style="word-break: break-all; word-wrap: normal; width: 100%;" Font-Size="Medium">
+        <thead>
+            <tr>
+                <th>週會分類</th>
+                <th>日期</th>
+                <th colspan="3">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewBag.Meetings != null)
+            {
+                var _Meeting = ViewBag.Meetings as List<MeetingWithSettings>;
+
+                @foreach (var item in _Meeting)
+                {
+                    <tr>
+
+                        <td align="left">
+                            <input type="hidden" asp-for="@item.Meeting.meet_id" />
+
+                            @if (ViewBag.EditingRow != null && ViewBag.EditingRow == item.Meeting.meet_id)
+                            {
+                                @* <input asp-for="@item.DisplayName" /> *@
+
+                                @if (ViewBag.DropDownOptions != null)
+                                {
+                                    var defaultSelectedValue = item.Meeting.MeetingType; // 设置默认选中项的值
+                                    var selectList = new List<SelectListItem>();
+
+                                    foreach (var option in ViewBag.DropDownOptions)
+                                    {
+                                        selectList.Add(new SelectListItem                                
+                                        {
+                                            Text = option.Text,
+                                            Value = option.Value,
+                                            Selected = option.Value == defaultSelectedValue // 设置选中状态
+                                        });
+                                    }
+
+                                    @Html.DropDownList("updateMeetingType", selectList, "請選擇一個選項", new { @class = "btn btn-primary dropdown-toggle" })
+
+                                }
+                            }
+                            else
+                            {
+                                @item.TypeDisplayName
+                            }
+
+                        </td>
+                        <td align="left">
+                            @if (ViewBag.EditingRow != null && ViewBag.EditingRow == item.Meeting.meet_id)
+                            {
+                                <input id="meetingDateInput" asp-for="@item.Meeting.MeetingDate" type="date" />
+                            }
+                            else
+                            {
+                                @* @item.Meeting.MeetingDate.ToString("yyyy/MM/dd HH:mm") *@
+                                @item.Meeting.MeetingDate.ToString("yyyy/MM/dd")
+                            }
+
+                        </td>
+                        <td>
+                            @if (ViewBag.EditingRow != null && ViewBag.EditingRow == item.Meeting.meet_id)
+                            {
+                                //<a href="#" class="btn btn-success" onclick="return ConfirmUpdate('@item.Meeting.meet_id', document.getElementById('updateMeetingType').value, document.getElementById('meetingDateInput').value);">確定</a>
+
+                                <a href="#" class="btn btn-success" onclick="return ConfirmUpdate('@item.Meeting.meet_id');">確定</a>
+
+                                //<a href="@Url.Action("ConfirmEdit", new { pno = item.Meeting.meet_id, type = item.Meeting.MeetingType })" class="btn btn-success" onclick="return ConfirmUpdate();">確定</a>
+
+                                //<a href="@Url.Action("ConfirmEdit", new { pno = item.Meeting.meet_id, type = item.Meeting.MeetingType, meetingDate = item.Meeting.MeetingDate  })" class="btn btn-success" onclick="return ConfirmUpdate('@item.Meeting.meet_id');">確定</a>
+                                <a href="@Url.Action("CancelEdit", new { pno = item.Meeting.meet_id, type = item.Meeting.MeetingType })" class="btn btn-secondary">Cancel</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Edit", new { pno = item.Meeting.meet_id, type = item.Meeting.MeetingType })" class="btn btn-secondary">編輯</a>
+                                <a href="@Url.Action("Delete", new { pno = item.Meeting.meet_id , type = item.Meeting.MeetingType})" class="btn btn-danger" onclick="return ConfirmDelete('@item.Meeting.MeetingDate.ToString("yyyy/MM/dd")');">刪除</a>
+                            }
+                        </td>
+                        <td>
+                            @if (ViewBag.EditingRow != null && ViewBag.EditingRow == item.Meeting.meet_id)
+                            {
+                            }
+                            else
+                            {
+                                <a href="/MeetingMerge/MeetingMerge?pno=@item.Meeting.meet_id&type=@item.Meeting.MeetingType&MeetingDate=@item.Meeting.MeetingDate" class="btn btn-primary">進行合併</a>
+
+                                //<a href="@Url.Action("MeetingMerge", new { pno = item.Meeting.meet_id, type = item.Meeting.MeetingType })" class="btn btn-primary">進行合併</a>
+                            }
+                        </td>
+                        <td>
+                            @if (ViewBag.EditingRow != null && ViewBag.EditingRow == item.Meeting.meet_id)
+                            {
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Review", new { pno = item.Meeting.meet_id, type = item.Meeting.MeetingType })" class="btn btn-dark">檢視</a>
+                            }
+                        </td>
+                    </tr>
+
+                }   //for
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function ConfirmDelete(MeetingDate) {        
+        return confirm('是否確認刪除週會日期 ' + MeetingDate + '？');
+    }
+
+    /*
+    function ConfirmUpdate(pno) {
+        var meetingDateValue = document.getElementById("meetingDateInput").value;
+        
+        return confirm('是否確認更新？');
+    }
+    */
+
+    function ConfirmUpdate(pno) {
+        var conflag = confirm('是否確認更新？');
+
+        if (conflag) {
+            // 組合表單資料
+
+            var meetingType = document.getElementById("updateMeetingType").value;
+            var meetingDate = document.getElementById("meetingDateInput").value;
+
+            var postData = {};
+            postData['pno'] = pno;// self.form.UserID;
+            postData['type'] = meetingType;// self.form.UserPwd;
+            postData['MeetingDate'] = meetingDate;
+
+            // 使用 jQuery Ajax 傳送至後端
+            $.ajax({
+                url: '@Url.Content("~/MeetingManage/ConfirmEdit")',
+                method: 'POST',
+                dataType: 'json',
+                data: { inModel: postData },
+                success: function (datas) {
+                    window.location.href = "/MeetingManage/MeetingManage";
+                    //location.reload();
+                },
+                error: function (err) {
+                    $('#ErrorMsg').html(err.responseText);
+                    $('#ErrorAlert').modal('toggle');
+                },
+            });
+
+            // var url = "@Url.Action("ConfirmEdit", new { pno = "PLACEHOLDER",type = "PLACEHOLDER_TYPE",meetingDate = "PLACEHOLDER_DATE" })";
+            // url = url.replace("PLACEHOLDER", pno);
+            // url = url.replace("PLACEHOLDER_TYPE", meetingType);
+            // url = url.replace("PLACEHOLDER_DATE", meetingDate);
+
+            // window.location.href = url; //
+            // return true; //
+        }
+
+    }
+
+
+</script>

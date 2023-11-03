@@ -1,0 +1,146 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@using DYDCPF.Classes;
+
+<div class="container">
+    <h4>@ViewBag.LocaMark
+        @* <a href="/Home/Index">@ViewBag.HomeName</a> /  *@
+        <a href="/MeetingManage/MeetingManage">週會簡報合併管理模組</a> /
+        週會簡報合併 @ViewBag.MeetingDate 簡報
+    </h4>
+
+    <table Style="word-break: break-all; word-wrap: normal; width: 100%; border:0; font-size: large;">
+        <tr>
+            <td style="vertical-align: middle;">
+                部門:
+            </td>
+            <td>
+
+                @if (ViewBag.DropDownOptions != null)
+                {
+                    @Html.DropDownList("Dept", (IEnumerable<SelectListItem>)ViewBag.DropDownOptions, "請選擇一個選項", new { @class = "btn btn-light dropdown-toggle" })
+                }
+            </td>
+            <td style="vertical-align: middle;">
+                日期：
+
+                @if (ViewBag.MeetingDate != null)
+                {
+                    @ViewBag.MeetingDate
+                }
+            </td>
+            <td style="vertical-align: middle;">
+                合併順序
+            </td>
+            <td>
+                <input type="text" id="txtSort" />
+            </td>
+            <td style="vertical-align: middle;">                
+                <a id="btnAdd" class="btn btn-dark">新增</a>
+            </td>
+        </tr>
+        
+    </table>
+    <br />
+    <table id="MergeList" class="gvStyle" Style="word-break: break-all; word-wrap: normal; width: 100%;" Font-Size="Medium">
+        <thead>
+            <tr>
+                <th>部門簡報</th>
+                <th>週會日期</th>
+                <th>合併順序</th>
+                <th >Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <table Style="width: 100%;">
+        <tr>
+            <td align="center">
+                <form asp-action="MergePDF" method="post">
+                    <button type="submit" class="btn btn-primary">合併</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+@* 
+    @if (ViewBag.PdfFileBase64 != null)
+    {
+        <p>檔案合併成功路徑：@ViewBag.mergedPdfPath</p>
+        <embed src="data:application/pdf;base64,@ViewBag.PdfFileBase64" width="100%" height="300" />
+    }
+ *@
+    @if (ViewBag.mergedPdfPath != null)
+    {
+        <p>檔案合併成功路徑：@ViewBag.mergedPdfPath</p>
+        <embed src="@Url.Content(ViewBag.mergedPdfPath)" type="application/pdf" width="100%" height="600" />
+    }
+    
+
+</div>
+
+<script>
+    var objIndex = 1; // initial
+
+    $(document).ready(function () {        
+        $("#btnAdd").on("click", function () {
+            var MeetingDate = "@ViewBag.MeetingDate";
+            var selectedDept = $("#Dept option:selected").val();
+            var selectedDeptText = $("#Dept option:selected").text();
+
+            if (selectedDept) {
+                
+                var table = $("#MergeList");
+                var newRow = $("<tr></tr>");
+
+                // 创建隐藏字段并放置在第一个<td>内
+                var hiddenField = $("<input />")
+                    .attr("id", "htxt_dept_" + objIndex)
+                    .attr("type", "hidden")
+                    .attr("data-index", objIndex) // 设置数据属性
+                    .val(selectedDept);
+
+                // 创建包含隐藏字段和文本的<td>
+                var firstTd = $("<td></td>")
+                    .append(hiddenField)
+                    .append(selectedDeptText);
+                    //.append(objIndex + "_" + selectedDeptText);
+
+                newRow.append(firstTd);
+
+                // 添加其他<td>和内容
+                newRow.append($("<td>" + MeetingDate + "</td>"));
+                
+                // 创建文本输入框并放置在第三个<td>内
+                var inputField = $("<input />")
+                    .attr("id", "txtSort_" + objIndex)
+                    .attr("type", "text");
+
+                var thirdTd = $("<td></td>").append(inputField);
+
+                newRow.append(thirdTd);
+
+                newRow.append($("<td><button class='btn btn-danger' onclick='deleteRow(this)'>删除</button></td>"));
+
+                // 将新行添加到表格
+                table.find("tbody").append(newRow);
+
+                // 增加编号以准备下一个隐藏字段
+                objIndex++;
+
+                // var newRow = "<tr><td>" + selectedDeptText + "</td><td>" + MeetingDate + "</td><td></td><td>Action</td></tr>";
+                // table.find("tbody").append(newRow);
+            }
+        });
+    });
+
+    function deleteRow(button) {        
+        var row = $(button).closest("tr");
+        var index = row.find("input[type=hidden]").attr("data-index");
+        console.log(index);
+        row.remove();        
+    }
+</script>

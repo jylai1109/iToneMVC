@@ -1,0 +1,138 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    
+}
+
+@using DYDCPF.Classes;
+
+<div class="container">
+    <h4>@ViewBag.LocaMark<a href="/Home/Index">@ViewBag.HomeName</a> / 週會簡報管理</h4>
+
+    <table>
+        <tr>
+            <td style="vertical-align: middle;">
+                @* <button type="button" class="btn btn-dark" href="/MeetingManage/MeetingAdd" >新增</button>
+ *@
+                <a class="btn btn-dark" href="/MeetingAdd/MeetingAdd">新增</a>
+            </td>
+
+            <td style="vertical-align: middle;">
+                週會分類：
+
+                @if (ViewBag.DropDownOptions != null)
+                {
+                    @Html.DropDownList("MeetingType", (IEnumerable<SelectListItem>)ViewBag.DropDownOptions, "請選擇一個選項", new { @class = "btn btn-primary dropdown-toggle" })
+                }
+            </td>
+            <td style="vertical-align: middle;">
+                &nbsp;&nbsp;&nbsp;
+                週會時間：
+                <input type="text" id="MeetingDate" />
+@* 
+                <div class="input-group date" id='date1'>
+                    <input id="MeetingDate" type="text" class="form-control" />
+                    <span class="input-group-addon">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                    </span>
+                </div> *@
+
+                @* <br />
+                <div class="input-append" id="Datetimepicker">
+                    <input id="TravelDateStart" name="TravelDateStart" value="" type="text" placeholder="出發日期" class="Datetimepicker form-control" />
+                </div>
+
+                <br />
+                123<br />*@
+                
+            </td>       
+            
+        </tr>
+        <tr>
+            <td colspan="3">
+                <br />
+                @Html.Partial("_MeetingPartial")
+                
+            </td>
+        </tr>
+    </table>
+    <br /><br /><br />
+    <form asp-action="MergePDF" method="post">
+        <button type="submit">合併PDF</button>
+    </form>
+
+    @* <embed src="@Url.Action("MergePDF")" width="100%" height="600" /> *@
+
+    @if (ViewBag.PdfFileBase64 != null)
+    {
+        <p>檔案合併成功路徑：@ViewBag.mergedPdfPath</p>
+        <embed src="data:application/pdf;base64,@ViewBag.PdfFileBase64" width="100%" height="300" />
+    }
+
+</div>
+
+<script>
+    // $('#date1').datetimepicker({
+    //     date: null, //一開始輸入框的日期為空
+    //     format: 'YYYY-MM-DD HH:mm', //日期的顯示格式
+    //     locale: moment.locale('zh-tw') //國別
+        
+    // });
+
+    $(document).ready(function () {
+        
+        console.log("datetimepickerJS");
+
+        $(function () {
+            $('#MeetingDate').datetimepicker({
+                format: 'Y-m-d', // Date format
+                step: 60,             // time 間隔（分鐘）
+                timepicker: false,     // 啟用時間選擇
+                datepicker: true,     // 啟用日期選擇
+            });
+        });
+
+    });
+
+
+    function InsertMeeging() {
+        console.log("InsertMeeging");
+
+        var self = this;
+
+        if ($("#MeetingType").val() == "") {
+            alert("請選擇週會分類");
+            return;
+        }
+        if ($("#MeetingDate").val() == "") {
+            alert("請輸入日期");
+            return;
+        }
+
+        // 組合表單資料
+        var postData = {};
+        postData['MeetingType'] = $("#MeetingType").val();// self.form.UserID;
+        postData['MeetingDate'] = $("#MeetingDate").val();// self.form.UserPwd;
+        
+        // 使用 jQuery Ajax 傳送至後端
+        $.ajax({
+            url: '@Url.Content("~/MeetingManage/InsertMeeging")',
+            method: 'POST',
+            dataType: 'json',
+            data: { inModel: postData },
+            success: function (datas) {
+                // if (datas.ErrMsg) {
+                //     alert(datas.ErrMsg);
+                //     return;
+                // }
+                //alert(datas.ResultMsg);
+                //$('#meetingTableDiv').html(datas);
+            },
+            error: function (err) {
+                $('#ErrorMsg').html(err.responseText);
+                $('#ErrorAlert').modal('toggle');
+            },
+        });
+    }
+</script>

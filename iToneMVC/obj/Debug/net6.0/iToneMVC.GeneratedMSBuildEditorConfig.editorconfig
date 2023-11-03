@@ -16,6 +16,18 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\DATA\iToneMVC_GIT\iToneMVC
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/DATA/iToneMVC_GIT/iToneMVC/Views/DeptUploadQuery/DeptUploadQuery.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwdFVwbG9hZFF1ZXJ5XERlcHRVcGxvYWRRdWVyeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/DATA/iToneMVC_GIT/iToneMVC/Views/DeptUpload/DeptUpload.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwdFVwbG9hZFxEZXB0VXBsb2FkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/DATA/iToneMVC_GIT/iToneMVC/Views/FunSetting/FunSetting.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnVuU2V0dGluZ1xGdW5TZXR0aW5nLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/DATA/iToneMVC_GIT/iToneMVC/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -24,12 +36,40 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/DATA/iToneMVC_GIT/iToneMVC/Views/IssueReport/IssueReport.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXNzdWVSZXBvcnRcSXNzdWVSZXBvcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/DATA/iToneMVC_GIT/iToneMVC/Views/Login/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cTG9naW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/DATA/iToneMVC_GIT/iToneMVC/Views/MeetingAdd/MeetingAdd.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVldGluZ0FkZFxNZWV0aW5nQWRkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/DATA/iToneMVC_GIT/iToneMVC/Views/MeetingManage/MeetingManage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVldGluZ01hbmFnZVxNZWV0aW5nTWFuYWdlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/DATA/iToneMVC_GIT/iToneMVC/Views/MeetingManage/_MeetingPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVldGluZ01hbmFnZVxfTWVldGluZ1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/DATA/iToneMVC_GIT/iToneMVC/Views/MeetingMerge/MeetingMerge.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVldGluZ01lcmdlXE1lZXRpbmdNZXJnZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/DATA/iToneMVC_GIT/iToneMVC/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/DATA/iToneMVC_GIT/iToneMVC/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/DATA/iToneMVC_GIT/iToneMVC/Views/WeeklyMaintain/WeeklyMaintain.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2Vla2x5TWFpbnRhaW5cV2Vla2x5TWFpbnRhaW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/DATA/iToneMVC_GIT/iToneMVC/Views/_ViewImports.cshtml]
